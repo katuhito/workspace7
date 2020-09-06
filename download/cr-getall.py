@@ -1,8 +1,9 @@
 # 再帰的処理
 # モジュール取り込み
 from bs4 import BeautifulSoup
-from urllib.request import
-from urllib.parse import
+import urllib.request as req
+import urllib.parse as parse
+from urllib.parse import urlparse
 from os import makedirs
 import os.path, time, re
 
@@ -35,11 +36,12 @@ def download_file(url):
     # ダウンロード先のディレクトリーを作成
     if not os.path.exists(savedir):
         print("mkdir=", savedir)
+        makedirs(savedir)
         # ファイルをダウンロード
     try:
         print("download=", url)
         urlretrieve(url, savepath)
-        time.sleep   #礼儀として1秒スリーブ
+        time.sleep(1)  #礼儀として1秒スリーブ
         return savepath
     except:
         print("ダウンロード失敗：", url)
@@ -59,8 +61,8 @@ def analize_html(url, root_url):
     links = enum_links(html, url)
     for link_url in links:
         # リンクがルート以外のパスを指していたら無視する
-        if link_url.find(root_url) !=0:
-            if re.search(r".css$", link_url):
+        if link_url.find(root_url) != 0:
+            if not re.search(r".css$", link_url):
                 continue
         # HTMLかどうか？
         if re.search(r".(html|htm)$", link_url):
@@ -72,5 +74,5 @@ def analize_html(url, root_url):
 
 if __name__ == "__main__":
     # URLをまるごとダウンロード
-    url = "https://docs.python.jp/3.6/library/"
+    url = "https://etama.jp/906/"
     analize_html(url, url)
